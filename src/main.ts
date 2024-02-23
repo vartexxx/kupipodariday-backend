@@ -4,6 +4,9 @@ import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
+import helmet from 'helmet';
+import { nestCsrf } from 'ncsrf';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap(): Promise<void> {
   const app: INestApplication = await NestFactory.create(AppModule);
@@ -21,6 +24,9 @@ async function bootstrap(): Promise<void> {
     .build();
   const document: OpenAPIObject = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/api/docs', app, document);
+  app.use(helmet());
+  app.use(cookieParser());
+  app.use(nestCsrf());
   await app.listen(configService.get('app.port'));
 }
 bootstrap();

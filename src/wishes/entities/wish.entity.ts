@@ -53,15 +53,17 @@ export class Wish {
   @IsNotEmpty()
   price: number;
 
-  @Column()
-  @MinLength(1)
+  @Column({
+    default: 0,
+    scale: 2,
+  })
   @IsNumber()
-  @IsNotEmpty()
   raised: number;
 
-  @Column()
+  @Column({
+    default: 0,
+  })
   @IsNumber()
-  @IsNotEmpty()
   copied: number;
 
   @Column()

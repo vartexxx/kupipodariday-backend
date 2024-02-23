@@ -68,10 +68,10 @@ export class UsersService {
     }
     try {
       await this.usersRepository.update(id, updateUserDto);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password, ...updUser } = await this.usersRepository.findOneBy({
-        id,
-      });
+      const { password: string, ...updUser } =
+        await this.usersRepository.findOneBy({
+          id,
+        });
       return updUser;
     } catch (_) {
       throw new BadRequestException(

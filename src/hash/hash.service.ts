@@ -7,7 +7,7 @@ export class HashService {
     return hashSync(password, genSaltSync(10));
   }
 
-  compareHash(password: string, hash: string) {
+  compareHash(password: string, hash: string): boolean {
     return compareSync(password, hash);
   }
 }

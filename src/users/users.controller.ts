@@ -1,13 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtGuard } from '../auth/guards/jwt-auth.guard';
 import { User } from './entities/user.entity';
@@ -25,8 +16,7 @@ export class UsersController {
   @Get('me')
   @UseGuards(JwtGuard)
   async getMe(@Req() req): Promise<TUser> {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...userWithoutPassword } =
+    const { password: string, ...userWithoutPassword } =
       await this.usersService.findOne('id', req.user.id);
     return userWithoutPassword;
   }
@@ -40,8 +30,8 @@ export class UsersController {
   @Get('me/wishes')
   @UseGuards(JwtGuard)
   async getMeWishes(@Req() req): Promise<Wish[]> {
-    const users = await this.usersService.findWishes(req.user.id);
-    const wishes = users.map((user) => user.wishes);
+    const users: User[] = await this.usersService.findWishes(req.user.id);
+    const wishes: Wish[][] = users.map((user: User) => user.wishes);
     return wishes[0];
   }
 

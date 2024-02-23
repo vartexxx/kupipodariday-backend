@@ -14,6 +14,7 @@ import { JwtGuard } from '../auth/guards/jwt-auth.guard';
 import { Wishlist } from './entities/wishlist.entity';
 import { CreateWishlistDto } from './dto/create-wishlist.dto';
 import { UpdateWishlistDto } from './dto/update-wishlist.dto';
+import { DeleteResult } from 'typeorm';
 
 @Controller('wishlistlists')
 export class WishlistsController {
@@ -46,13 +47,13 @@ export class WishlistsController {
     @Body() updateWishlistDto: UpdateWishlistDto,
     @Req() req,
     @Param('id') id: number,
-  ) {
+  ): Promise<Wishlist> {
     return this.wishlistsService.update(updateWishlistDto, req.user, id);
   }
 
   @Delete()
   @UseGuards(JwtGuard)
-  async delete(@Param('id') id: number, @Req() req) {
+  async delete(@Param('id') id: number, @Req() req): Promise<DeleteResult> {
     return this.wishlistsService.delete(id, req.user);
   }
 }

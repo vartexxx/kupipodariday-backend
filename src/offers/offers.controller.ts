@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { OffersService } from './offers.service';
 import { JwtGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateOfferDto } from './dto/create-offer.dto';
@@ -10,8 +18,14 @@ export class OffersController {
 
   @Get()
   @UseGuards(JwtGuard)
-  async getAll() {
+  async getAll(): Promise<Offer[]> {
     return this.offersService.findAll();
+  }
+
+  @Get(':id')
+  @UseGuards(JwtGuard)
+  async getOne(@Param('id') id: number): Promise<Offer> {
+    return await this.offersService.findOne(id);
   }
 
   @Post()

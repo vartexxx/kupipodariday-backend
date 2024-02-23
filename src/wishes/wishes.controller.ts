@@ -21,7 +21,7 @@ export class WishesController {
 
   @Post()
   @UseGuards(JwtGuard)
-  async create(@Body() creteWishDto: CreateWishDto, @Req() req) {
+  async create(@Body() creteWishDto: CreateWishDto, @Req() req): Promise<Wish> {
     return this.wishesService.create(creteWishDto, req?.user);
   }
 
@@ -47,19 +47,19 @@ export class WishesController {
     @Param('id') id: number,
     @Body() updateWishDto: UpdateWishDto,
     @Req() req,
-  ) {
+  ): Promise<Wish[]> {
     return await this.wishesService.update(id, updateWishDto, req.user.id);
   }
 
   @Delete(':id')
   @UseGuards(JwtGuard)
-  async deleteById(@Param('id') id: number, @Req() req) {
+  async deleteById(@Param('id') id: number, @Req() req): Promise<Wish> {
     return await this.wishesService.delete(id, req.user.id);
   }
 
   @Post(':id/copy')
   @UseGuards(JwtGuard)
-  async copyById(@Param('id') id: number, @Req() req) {
+  async copyById(@Param('id') id: number, @Req() req): Promise<Wish> {
     return await this.wishesService.copy(id, req.user.id);
   }
 }

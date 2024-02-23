@@ -28,9 +28,9 @@ export class Offer {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.offers)
+  @ManyToOne(() => User, (user: User) => user.offers)
   user: User;
 
-  @ManyToOne(() => Wish, (wish) => wish.offers)
+  @ManyToOne(() => Wish, (wish: Wish) => wish.offers)
   item: Wish;
 }

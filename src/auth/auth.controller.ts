@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UsersService } from '../users/users.service';
 import { LocalGuard } from './guards/local-auth.guard';
+import { User } from '../users/entities/user.entity';
 
 @Controller()
 export class AuthController {
@@ -18,7 +19,7 @@ export class AuthController {
   }
 
   @Post('/signup')
-  async register(@Body() createUserDto: CreateUserDto) {
+  async register(@Body() createUserDto: CreateUserDto): Promise<User> {
     return await this.usersService.create(createUserDto);
   }
 }

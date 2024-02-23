@@ -1,7 +1,11 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Wishlist } from './entities/wishlist.entity';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { WishesService } from '../wishes/wishes.service';
 import { CreateWishlistDto } from './dto/create-wishlist.dto';
 import { User } from '../users/entities/user.entity';
@@ -16,7 +20,7 @@ export class WishlistsService {
   ) {}
 
   async findAll(): Promise<Wishlist[]> {
-    const wishlists = await this.wishlistsRepository.find({
+    const wishlists: Wishlist[] = await this.wishlistsRepository.find({
       relations: ['owner', 'items'],
     });
     if (!wishlists) {
@@ -36,7 +40,7 @@ export class WishlistsService {
     createWishlistDto: CreateWishlistDto,
     owner: User,
   ): Promise<Wishlist> {
-    const items = [];
+    const items: any[] = [];
     const { image, name, description } = createWishlistDto;
     for (const itemId of createWishlistDto.itemsId) {
       items.push(await this.wishesService.findOne(itemId));
@@ -50,11 +54,20 @@ export class WishlistsService {
     });
   }
 
-  async update(updateWishlistDto: UpdateWishlistDto, owner: User, id: number) {
-    const wishlist = await this.wishlistsRepository.findOne({
+  async update(
+    updateWishlistDto: UpdateWishlistDto,
+    owner: User,
+    id: number,
+  ): Promise<Wishlist> {
+    const wishlist: Wishlist = await this.wishlistsRepository.findOne({
       where: { id },
       relations: { owner: true, items: true },
     });
+    if (owner.id !== wishlist?.owner?.id) {
+      throw new ForbiddenException(
+        'Редактировать можно только свои подборки подарков.',
+      );
+    }
     const items = [];
     await this.wishlistsRepository.save({
       id: wishlist.id,
@@ -71,13 +84,15 @@ export class WishlistsService {
     });
   }
 
-  async delete(id: number, owner: User) {
-    const wishList = await this.wishlistsRepository.findOne({
+  async delete(id: number, owner: User): Promise<DeleteResult> {
+    const wishList: Wishlist = await this.wishlistsRepository.findOne({
       where: { id },
       relations: { owner: true },
     });
     if (wishList.owner.id !== owner.id) {
-      throw new BadRequestException('Нельзя удалить не свой список.');
+      throw new BadRequestException(
+        'Удалять можно только свои подборки подарков.',
+      );
     }
     return await this.wishlistsRepository.delete(wishList);
   }

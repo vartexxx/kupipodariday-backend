@@ -5,6 +5,7 @@ import { Offer } from './entities/offer.entity';
 import { WishesService } from '../wishes/wishes.service';
 import { CreateOfferDto } from './dto/create-offer.dto';
 import { User } from '../users/entities/user.entity';
+import { Wish } from '../wishes/entities/wish.entity';
 
 @Injectable()
 export class OffersService {
@@ -14,19 +15,21 @@ export class OffersService {
     private readonly wishesService: WishesService,
   ) {}
 
-  async findAll() {
+  async findAll(): Promise<Offer[]> {
     return await this.offerRepository.find();
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<Offer> {
     return await this.offerRepository.findOne({
       where: { id },
     });
   }
 
   async create(createOfferDto: CreateOfferDto, user: User) {
-    const wishes = await this.wishesService.findOne(createOfferDto.itemId);
-    const wish = await this.wishesService.findOne(wishes.id);
+    const wishes: Wish = await this.wishesService.findOne(
+      createOfferDto.itemId,
+    );
+    const wish: Wish = await this.wishesService.findOne(wishes.id);
     if (wish.owner.id === user.id) {
       throw new ForbiddenException(
         'Пользователю нельзя вносить деньги на собственные подарки.',

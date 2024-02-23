@@ -33,15 +33,19 @@ export class WishesService {
     });
   }
 
-  async findMany(key: string, param: any) {
+  async findMany(key: string, param: any): Promise<Wish[]> {
     return await this.wishesRepository.findBy({
       [key]: param,
     });
   }
 
-  async update(id: number, updateWishDto: UpdateWishDto, userId: number) {
+  async update(
+    id: number,
+    updateWishDto: UpdateWishDto,
+    userId: number,
+  ): Promise<Wish[]> {
     const wish = await this.wishesRepository.findOne({
-      relations: { owner: true /*offer: true*/ },
+      relations: { owner: true },
       where: { id },
     });
     if (updateWishDto.price && wish.raised > 0) {
@@ -60,9 +64,9 @@ export class WishesService {
     }
   }
 
-  async delete(id: number, userId: number) {
-    const wish = await this.wishesRepository.findOne({
-      relations: { owner: true /*offer: true*/ },
+  async delete(id: number, userId: number): Promise<Wish> {
+    const wish: Wish = await this.wishesRepository.findOne({
+      relations: { owner: true },
       where: { id },
     });
     if (wish.owner.id !== userId) {
@@ -71,8 +75,8 @@ export class WishesService {
     return await this.wishesRepository.remove(wish);
   }
 
-  async copy(id: number, user: User) {
-    const wish = await this.wishesRepository.findOneBy({ id });
+  async copy(id: number, user: User): Promise<Wish> {
+    const wish: Wish = await this.wishesRepository.findOneBy({ id });
     const isAdded = !!(await this.wishesRepository.findOne({
       where: { owner: { id: user.id }, name: wish.name },
     }));

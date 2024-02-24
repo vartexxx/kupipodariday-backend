@@ -4,9 +4,6 @@ export class CreateWishlistDto {
   @IsString()
   name: string;
 
-  @IsString()
-  description: string;
-
   @IsUrl()
   image: string;
 

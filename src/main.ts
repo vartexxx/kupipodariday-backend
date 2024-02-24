@@ -11,6 +11,7 @@ import * as cookieParser from 'cookie-parser';
 async function bootstrap(): Promise<void> {
   const app: INestApplication = await NestFactory.create(AppModule);
   app.useLogger(app.get(WINSTON_MODULE_PROVIDER));
+  app.enableCors();
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,

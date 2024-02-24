@@ -60,13 +60,13 @@ export class Wish extends BaseEntity {
   @IsString()
   description: string;
 
-  @ManyToOne(() => User, (user) => user.wishes)
+  @ManyToOne(() => User, (user: User) => user.wishes)
   @JoinColumn({ name: 'user_id' })
   owner: User;
 
-  @OneToMany(() => Offer, (offer) => offer.item)
+  @OneToMany(() => Offer, (offer: Offer) => offer.item)
   offers: Offer[];
 
-  @ManyToMany(() => Wishlist, (wishlist) => wishlist.items)
+  @ManyToMany(() => Wishlist, (wishlist: Wishlist) => wishlist.items)
   wishlists: Wishlist[];
 }

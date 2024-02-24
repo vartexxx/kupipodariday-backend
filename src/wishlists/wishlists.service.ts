@@ -41,14 +41,13 @@ export class WishlistsService {
     owner: User,
   ): Promise<Wishlist> {
     const items: any[] = [];
-    const { image, name, description } = createWishlistDto;
+    const { image, name } = createWishlistDto;
     for (const itemId of createWishlistDto.itemsId) {
       items.push(await this.wishesService.findOne(itemId));
     }
     return this.wishlistsRepository.save({
       name,
       image,
-      description,
       owner,
       items,
     });
